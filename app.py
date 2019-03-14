@@ -1,6 +1,4 @@
-import json
-
-from flask import Flask, request
+from flask import Flask, request, json
 
 from . import create_app
 
@@ -9,13 +7,13 @@ from .models import Person
 app = create_app()
 
 
-@app.route('/api/v1/person')
+@app.route('/api/v1/person/', methods=['GET'])
 def list():
     persons = Person.query.all()
-    return jsonify(persons.to_dict()), 200
+    return json.jsonify([person.to_dict() for person in persons]), 200
 
-@app.route('/api/v1/person/<person_id>')
+@app.route('/api/v1/person/<person_id>', methods=['GET'])
 def get_person(person_id):
-    persons = Person.query.filter_by(id=person_id)
-    return persons
+    person = Person.query.filter_by(id=person_id).first()
+    return json.jsonify(person.to_dict())
 
